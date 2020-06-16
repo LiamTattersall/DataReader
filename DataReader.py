@@ -2,6 +2,7 @@ import datetime as dt   #Time functions
 import pandas as pd     #Data analysis
 import numpy as np      #Number manipulation
 import pytz             #Time zone adjustment (needed as colab servers are not in Austrailia)
+import math
 
 timeZone = pytz.timezone('Australia/ACT') #Gets time zone
 framedData = pd.read_csv("https://github.com/LiamTattersall/DataReader/raw/testing_data/testset1.csv", sep=",") #Gets data
@@ -42,6 +43,12 @@ for i in range(0, scanNumber): #For each scan, checks what time that scan was, t
     lineNumber = 3
   markColumn = np.where(attendance == timeTable[day,j] + str(lineNumber))[1][0]
   markRow = np.where(attendance == dataSet[i,0])[0][0]
-  attendance[markRow,markColumn] = 'Marked'
+  k = j + 1
+  while timeTable[day,k] == 'none':
+    k += 1
+  duration = (math.floor(float(timeTable[0,k])) + float(timeTable[0,k])%1 * 5/3) - (math.floor(float(timeTable[0,j])) + + float(timeTable[0,j])%1 * 5/3)
+  if duration%1 != 0:
+    duration = duration * (5/3)
+  attendance[markRow,markColumn] = duration
 
 print(attendance)
